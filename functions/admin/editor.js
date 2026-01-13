@@ -1,6 +1,6 @@
 /**
- * 文章编辑器
- * GET /admin/editor - Markdown 编辑器
+ * 文章编辑器 - 集成 doocs/md
+ * GET /admin/editor - 使用 doocs/md 编辑器
  */
 
 const editorHTML = `<!DOCTYPE html>
@@ -9,8 +9,6 @@ const editorHTML = `<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文章编辑器 - 博客后台</title>
-    <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -24,6 +22,7 @@ const editorHTML = `<!DOCTYPE html>
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         
         .header {
@@ -34,6 +33,7 @@ const editorHTML = `<!DOCTYPE html>
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
         }
         
         .header h1 {
@@ -71,43 +71,24 @@ const editorHTML = `<!DOCTYPE html>
             border: 1px solid rgba(255,255,255,0.3);
         }
         
-        .editor-container {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-        
-        .editor-pane, .preview-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .meta-panel {
             background: white;
-            margin: 20px 10px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        
-        .pane-header {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .meta-inputs {
-            padding: 20px;
-            background: white;
+            padding: 20px 30px;
             border-bottom: 1px solid #e0e0e0;
         }
         
-        .input-group {
+        .meta-row {
+            display: flex;
+            gap: 20px;
             margin-bottom: 15px;
         }
         
-        .input-group:last-child {
+        .meta-row:last-child {
             margin-bottom: 0;
+        }
+        
+        .input-group {
+            flex: 1;
         }
         
         .input-group label {
@@ -118,8 +99,7 @@ const editorHTML = `<!DOCTYPE html>
             color: #555;
         }
         
-        .input-group input,
-        .input-group select {
+        .input-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -127,8 +107,7 @@ const editorHTML = `<!DOCTYPE html>
             font-size: 14px;
         }
         
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -138,77 +117,16 @@ const editorHTML = `<!DOCTYPE html>
             font-weight: 600;
         }
         
-        #content {
+        .editor-container {
             flex: 1;
-            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #md-editor-iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            resize: none;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        #content:focus {
-            outline: none;
-        }
-        
-        #preview {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            line-height: 1.8;
-        }
-        
-        #preview h1, #preview h2, #preview h3 {
-            margin-top: 24px;
-            margin-bottom: 16px;
-            color: #333;
-        }
-        
-        #preview h1 { font-size: 32px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        #preview h2 { font-size: 24px; }
-        #preview h3 { font-size: 20px; }
-        
-        #preview p {
-            margin-bottom: 16px;
-            color: #555;
-        }
-        
-        #preview code {
-            background: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 13px;
-        }
-        
-        #preview pre {
-            background: #f5f5f5;
-            padding: 16px;
-            border-radius: 6px;
-            overflow-x: auto;
-            margin-bottom: 16px;
-        }
-        
-        #preview pre code {
-            background: none;
-            padding: 0;
-        }
-        
-        #preview blockquote {
-            border-left: 4px solid #667eea;
-            padding-left: 16px;
-            margin: 16px 0;
-            color: #666;
-        }
-        
-        #preview ul, #preview ol {
-            margin-bottom: 16px;
-            padding-left: 24px;
-        }
-        
-        #preview li {
-            margin-bottom: 8px;
         }
         
         .loading {
@@ -241,46 +159,25 @@ const editorHTML = `<!DOCTYPE html>
         </div>
     </div>
     
-    <div class="editor-container">
-        <div class="editor-pane">
-            <div class="pane-header">编辑</div>
-            <div class="meta-inputs">
-                <div class="input-group">
-                    <label for="title">标题</label>
-                    <input type="text" id="title" placeholder="输入文章标题">
-                </div>
-                <div class="input-group">
-                    <label for="category">分类</label>
-                    <input type="text" id="category" placeholder="例如：技术、生活">
-                </div>
-                <div class="input-group">
-                    <label for="tags">标签（用逗号分隔）</label>
-                    <input type="text" id="tags" placeholder="例如：JavaScript, React">
-                </div>
+    <div class="meta-panel">
+        <div class="meta-row">
+            <div class="input-group" style="flex: 2;">
+                <label for="title">标题</label>
+                <input type="text" id="title" placeholder="输入文章标题">
             </div>
-            <textarea id="content" placeholder="在这里使用 Markdown 编写文章内容...
-
-# 一级标题
-## 二级标题
-
-**粗体文字**
-*斜体文字*
-
-- 列表项 1
-- 列表项 2
-
-\`代码\`
-
-\`\`\`javascript
-console.log('Hello World');
-\`\`\`
-"></textarea>
+            <div class="input-group">
+                <label for="category">分类</label>
+                <input type="text" id="category" placeholder="例如：技术、生活">
+            </div>
+            <div class="input-group">
+                <label for="tags">标签（用逗号分隔）</label>
+                <input type="text" id="tags" placeholder="例如：JavaScript, React">
+            </div>
         </div>
-        
-        <div class="preview-pane">
-            <div class="pane-header">预览</div>
-            <div id="preview"></div>
-        </div>
+    </div>
+    
+    <div class="editor-container">
+        <iframe id="md-editor-iframe" src="https://doocs.github.io/md/"></iframe>
     </div>
     
     <div class="loading" id="loading">
@@ -294,15 +191,22 @@ console.log('Hello World');
         }
         
         let currentPostId = null;
+        let editorWindow = null;
         
         // 获取 URL 参数
         const urlParams = new URLSearchParams(window.location.search);
         const editId = urlParams.get('id');
         
-        // 如果是编辑模式，加载文章
-        if (editId) {
-            loadPost(editId);
-        }
+        // 等待 iframe 加载
+        const iframe = document.getElementById('md-editor-iframe');
+        iframe.onload = function() {
+            editorWindow = iframe.contentWindow;
+            
+            // 如果是编辑模式，加载文章
+            if (editId) {
+                loadPost(editId);
+            }
+        };
         
         // 加载文章
         async function loadPost(id) {
@@ -314,25 +218,63 @@ console.log('Hello World');
                     const post = data.data;
                     currentPostId = post.id;
                     document.getElementById('title').value = post.title;
-                    document.getElementById('content').value = post.content;
                     document.getElementById('category').value = post.category || '';
                     document.getElementById('tags').value = (post.tags || []).join(', ');
-                    updatePreview();
+                    
+                    // 等待编辑器准备好，然后设置内容
+                    setTimeout(() => {
+                        setEditorContent(post.content);
+                    }, 1000);
                 }
             } catch (error) {
                 alert('加载文章失败');
             }
         }
         
-        // 实时预览
-        const contentEl = document.getElementById('content');
-        const previewEl = document.getElementById('preview');
+        // 设置编辑器内容
+        function setEditorContent(content) {
+            try {
+                // doocs/md 编辑器通过 postMessage 通信
+                editorWindow.postMessage({
+                    type: 'SET_CONTENT',
+                    content: content
+                }, '*');
+            } catch (error) {
+                console.error('设置编辑器内容失败:', error);
+            }
+        }
         
-        contentEl.addEventListener('input', updatePreview);
-        
-        function updatePreview() {
-            const markdown = contentEl.value;
-            previewEl.innerHTML = marked.parse(markdown);
+        // 获取编辑器内容
+        function getEditorContent() {
+            return new Promise((resolve) => {
+                // 监听来自编辑器的消息
+                const handler = (event) => {
+                    if (event.data && event.data.type === 'CONTENT') {
+                        window.removeEventListener('message', handler);
+                        resolve(event.data.content);
+                    }
+                };
+                
+                window.addEventListener('message', handler);
+                
+                // 请求内容
+                editorWindow.postMessage({
+                    type: 'GET_CONTENT'
+                }, '*');
+                
+                // 超时处理
+                setTimeout(() => {
+                    window.removeEventListener('message', handler);
+                    // 如果 postMessage 不工作，尝试直接从 localStorage 读取
+                    // doocs/md 会将内容保存在 localStorage 中
+                    try {
+                        const content = localStorage.getItem('__editor_content') || '';
+                        resolve(content);
+                    } catch (e) {
+                        resolve('');
+                    }
+                }, 1000);
+            });
         }
         
         // 保存草稿
@@ -349,7 +291,6 @@ console.log('Hello World');
         // 保存文章
         async function savePost(status) {
             const title = document.getElementById('title').value.trim();
-            const content = document.getElementById('content').value.trim();
             const category = document.getElementById('category').value.trim();
             const tagsInput = document.getElementById('tags').value.trim();
             const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()) : [];
@@ -359,14 +300,18 @@ console.log('Hello World');
                 return;
             }
             
-            if (!content) {
-                alert('请输入内容');
-                return;
-            }
-            
             document.getElementById('loading').classList.add('show');
             
             try {
+                // 从编辑器获取内容
+                const content = await getEditorContent();
+                
+                if (!content || content.trim() === '') {
+                    alert('请输入内容');
+                    document.getElementById('loading').classList.remove('show');
+                    return;
+                }
+                
                 const url = currentPostId 
                     ? \`/api/posts/\${currentPostId}\`
                     : '/api/posts/create';
@@ -400,7 +345,7 @@ console.log('Hello World');
                     alert('保存失败：' + data.error);
                 }
             } catch (error) {
-                alert('网络错误');
+                alert('保存失败：' + error.message);
             } finally {
                 document.getElementById('loading').classList.remove('show');
             }
@@ -413,8 +358,25 @@ console.log('Hello World');
             }
         }
         
-        // 初始化预览
-        updatePreview();
+        // 监听来自 doocs/md 的消息
+        window.addEventListener('message', (event) => {
+            // 可以在这里处理编辑器的各种事件
+            if (event.data && event.data.type === 'EDITOR_READY') {
+                console.log('编辑器已准备好');
+            }
+        });
+        
+        // 定期保存到 localStorage 作为备份
+        setInterval(async () => {
+            try {
+                const content = await getEditorContent();
+                if (content) {
+                    localStorage.setItem('__editor_content', content);
+                }
+            } catch (e) {
+                // 忽略错误
+            }
+        }, 30000); // 每30秒自动保存
     </script>
 </body>
 </html>`;
