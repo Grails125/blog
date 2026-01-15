@@ -583,7 +583,7 @@ meting_api: "https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth
 capsule:
   enable: true
   # 歌单 ID / 单曲 ID
-  id: 5144842535
+  id: 72120243
   # 服务商：netease / qq / xiami / kugou / baidu
   server: netease
   # 类型：playlist / song
@@ -867,7 +867,7 @@ search:
 music:
   enable: true
   # 歌单 ID / 单曲 ID
-  id: 5144842535
+  id: 72120243
   # 服务商：netease / qq / xiami / kugou / baidu
   server: netease
   # 类型：playlist / song
