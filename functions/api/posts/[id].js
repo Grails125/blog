@@ -10,16 +10,31 @@
  */
 export async function onRequestGet(context) {
   const { params, env } = context;
-  const { id } = params;
+  let { id } = params;
 
   try {
+    // URL 解码 ID
+    id = decodeURIComponent(id);
+    console.log("[GET Post] ID:", id);
+
     // 从 R2 读取文章
     const filename = `posts/${id}.md`;
+    console.log("[GET Post] Looking for file:", filename);
+
     const object = await env.BLOG_R2.get(filename);
 
     if (!object) {
+      console.log("[GET Post] File not found:", filename);
+
+      // 列出所有文章文件用于调试
+      const list = await env.BLOG_R2.list({ prefix: "posts/" });
+      console.log(
+        "[GET Post] Available files:",
+        list.objects.map((o) => o.key)
+      );
+
       return new Response(
-        JSON.stringify({ success: false, error: "文章不存在" }),
+        JSON.stringify({ success: false, error: "文章不存在", filename }),
         { status: 404, headers: { "Content-Type": "application/json" } }
       );
     }
