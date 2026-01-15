@@ -67,7 +67,7 @@ nav:
 # Home Top Banner
 # 首页顶部
 hometop:
-  enable: true
+  enable: false
   banner:
     title: 分享技术<br >与科技生活 # 大字
     desc:
@@ -144,14 +144,14 @@ aside:
       night: 早点休息
       goodnight: 晚安 😴
     witty_words:
-      # - 你可以的
-      # - 你一定可以的
-      # - 祝你好运，陌生人
+      - 你可以的
+      - 你一定可以的
+      - 祝你好运，陌生人
     # social
     # 社交信息图标
     information:
-    #  Github: https://github.com/everfu || fab fa-github # Name: link || icon
-    #  Bilibili: https://space.bilibili.com/1329819902 || fab fa-bilibili
+      Github: https://github.com/Grails125 || fab fa-github # Name: link || icon
+      Bilibili: https://space.bilibili.com/25239339 || fab fa-bilibili
   # --------------------------- end ---------------------------
 
   # --------------------------- start ---------------------------
@@ -222,7 +222,7 @@ page:
     # Default image when no cover is set
     # 未设置封面时的默认图片
     cover:
-      # - /img/default.png # 默认图片 / default cover
+      - /img/default.png # 默认图片 / default cover
 # --------------------------- end ---------------------------
 
 # --------------------------- start ---------------------------
@@ -233,7 +233,7 @@ post:
     # Default image when no cover is set
     # 未设置封面时的默认图片
     cover:
-      # - /img/default.avif # 默认图片 / default cover
+      - /img/default.avif # 默认图片 / default cover
     # Location
     # 位置
     locate: China
@@ -364,7 +364,7 @@ font:
 # When the user exits the page, modify the title
 # 当用户退出页面时，修改标题
 lure:
-  enable: true
+  enable: false
   jump: 404 Not Found
   back: ヾ(≧∇≦*)ゝHey, hey, you fell for it.
 # --------------------------- end ---------------------------
@@ -864,7 +864,7 @@ search:
 # Music Page
 # 音乐馆
 music:
-  enable: false
+  enable: true
   # 歌单 ID / 单曲 ID
   id: 5144842535
   # 服务商：netease / qq / xiami / kugou / baidu

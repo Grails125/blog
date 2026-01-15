@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 我的博客
+title: Grails's Blog
 subtitle: "基于 Hexo 和 Solitude 主题"
 description: "一个现代化的个人博客"
-keywords: 博客, Hexo, Solitude
-author: 博主
+keywords: 博客, Hexo, Solitude, Cloudflare, Cloudflare Pages, Cloudflare R2,
+author: Grails
 language: zh-CN
 timezone: ""
 

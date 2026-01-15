@@ -378,7 +378,23 @@ const editorHTML = `<!DOCTYPE html>
 
           const data = await res.json();
           if (data.success) {
-            alert(publish ? "发布成功!" : "保存成功!");
+            alert(publish ? "发布成功!" : "保存成功!" + "\n\n 正在触发重新构建...");
+            // 自动触发重新构建
+                fetch("/api/rebuild", {
+                  method: "POST",
+                  headers: { Authorization: \`Bearer \${getToken()}\` },
+                })
+                  .then(res => res.json())
+                  .then(rebuildData => {
+                    if (rebuildData.success) {
+                      message.value = "发布成功!网站正在重新构建，约 2-3 分钟后生效。";
+                    } else {
+                      message.value = "发布成功，但触发构建失败，请前往管理后台首页，手动点击「重新构建」按钮。";
+                    }
+                  })
+                  .catch(() => {
+                    message.value = "发布成功，但触发构建失败，请前往管理后台首页，手动点击「重新构建」按钮。";
+                  });
             if (!postId) {
               document.getElementById("postId").value = data.data.id;
               window.history.replaceState(null, null, "?id=" + data.data.id);
