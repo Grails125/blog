@@ -300,7 +300,7 @@ const adminHTML = `<!DOCTYPE html>
                 // 自动触发重新构建
                 fetch("/api/rebuild", {
                   method: "POST",
-                  headers: { Authorization: `Bearer ${getToken()}` },
+                  headers: { Authorization: \`Bearer \${getToken()}\` },
                 })
                   .then(res => res.json())
                   .then(rebuildData => {
