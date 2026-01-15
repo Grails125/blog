@@ -300,7 +300,7 @@ const editorHTML = `<!DOCTYPE html>
           alert("加载文章失败: " + e.message);
         }
       }
-        try {
+        
           const res = await fetch(\`/api/posts/\${postId}\`);
           const data = await res.json();
           if (data.success) {
