@@ -170,6 +170,16 @@ export async function onRequestDelete(context) {
     }
 
     // 删除 R2 文件
+    const decodedId = decodeURIComponent(id);
+    const filename = `posts/${decodedId}.md`;
+
+    console.log("[DELETE Post] ID:", id);
+    console.log("[DELETE Post] Decoded ID:", decodedId);
+    console.log("[DELETE Post] Deleting file:", filename);
+
+    await env.BLOG_R2.delete(filename);
+
+    console.log("[DELETE Post] File deleted successfully");
     const filename = `posts/${id}.md`;
     await env.BLOG_R2.delete(filename);
 
