@@ -68,34 +68,46 @@ async function onRequest(context) {
  */
 async function injectKVPosts(response, env, url) {
   try {
+    console.log("[KV Inject] Starting injection for:", url.pathname);
+
     // 获取 KV 中的文章列表
     const kvPosts =
       (await env.BLOG_KV.get("posts:list", { type: "json" })) || [];
+    console.log("[KV Inject] Total KV posts:", kvPosts.length);
+
     const publishedPosts = kvPosts.filter(
       (post) => post.status === "published"
     );
+    console.log("[KV Inject] Published posts:", publishedPosts.length);
 
     if (publishedPosts.length === 0) {
+      console.log("[KV Inject] No published posts, skipping injection");
       return response;
     }
 
-    // 读取原始 HTML
-    let html = await response.text();
+    // 克隆 response 以读取 body
+    const clonedResponse = response.clone();
+    let html = await clonedResponse.text();
+    console.log("[KV Inject] HTML length:", html.length);
 
     // 根据不同页面类型注入文章
     if (url.pathname === "/" || url.pathname === "/index.html") {
+      console.log("[KV Inject] Injecting to home page");
       html = injectToHomePage(html, publishedPosts);
     } else if (url.pathname.startsWith("/tags/")) {
+      console.log("[KV Inject] Injecting to tag page");
       html = injectToTagPage(html, publishedPosts, url);
     } else if (url.pathname.startsWith("/categories/")) {
+      console.log("[KV Inject] Injecting to category page");
       html = injectToCategoryPage(html, publishedPosts, url);
     }
 
+    console.log("[KV Inject] Injection complete");
     return new Response(html, {
       headers: response.headers,
     });
   } catch (error) {
-    console.error("Error injecting KV posts:", error);
+    console.error("[KV Inject] Error:", error);
     return response;
   }
 }
@@ -107,11 +119,17 @@ function injectToHomePage(html, posts) {
   const insertMarker = '<div class="recent-posts">';
   const insertIndex = html.indexOf(insertMarker);
 
+  console.log("[Home Inject] Looking for marker:", insertMarker);
+  console.log("[Home Inject] Insert index:", insertIndex);
+
   if (insertIndex === -1) {
+    console.log("[Home Inject] Marker not found!");
     return html;
   }
 
   const dynamicPostsHTML = generateHomePostsHTML(posts);
+  console.log("[Home Inject] Generated HTML length:", dynamicPostsHTML.length);
+
   const before = html.substring(0, insertIndex + insertMarker.length);
   const after = html.substring(insertIndex + insertMarker.length);
 
