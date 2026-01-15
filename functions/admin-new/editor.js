@@ -301,7 +301,7 @@ const editorHTML = `<!DOCTYPE html>
         }
       }
         
-          const res = await fetch(\`/api/posts/\${postId}\`);
+          (\`/api/posts/\${postId}\`);
           const data = await res.json();
           if (data.success) {
             const post = data.data;
