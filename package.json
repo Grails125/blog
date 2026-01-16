@@ -8,7 +8,17 @@
     "clean": "hexo clean",
     "deploy": "hexo deploy",
     "server": "hexo server",
-    "admin": "node admin/server.js"
+    "admin": "node admin/server.js",
+    "dev": "hexo server --draft",
+    "start": "npm run server",
+    "admin:dev": "nodemon admin/server.js",
+    "preview": "npm run build && npm run server",
+    "new": "hexo new",
+    "publish": "hexo publish",
+    "lint": "eslint 'functions/**/*.js' 'admin/**/*.js' 'scripts/**/*.js'",
+    "format": "prettier --write '**/*.{js,json,md,yml}'",
+    "ci:build": "npm run download-r2 && hexo clean && hexo generate",
+    "ci:deploy": "npm run ci:build"
   },
   "hexo": {
     "version": "8.1.1"
@@ -31,5 +41,12 @@
     "hexo-server": "^3.0.0",
     "hexo-theme-solitude": "^3.0.21",
     "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.0"
   }
 }
