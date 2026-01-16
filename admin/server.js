@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
@@ -16,7 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Serve static files
 const STATIC_DIR = path.join(__dirname, "static");

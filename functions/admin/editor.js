@@ -378,7 +378,7 @@ const editorHTML = `<!DOCTYPE html>
 
           const data = await res.json();
           if (data.success) {
-           alert(publish ? "发布成功!" : "保存成功!");
+           alert(publish ? "发布成功，重新构建后即可看到文章！" : "保存成功！");
             if (!postId) {
               document.getElementById("postId").value = data.data.id;
               window.history.replaceState(null, null, "?id=" + data.data.id);
