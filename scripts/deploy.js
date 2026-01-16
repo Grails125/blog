@@ -25,12 +25,12 @@ try {
 
   // 2. 部署
   console.log("\n📤 步骤 2/2: 部署到 Cloudflare Pages...");
-  execSync("npx wrangler pages deploy public --project-name=blog-hexo-kv", {
+  execSync("npx wrangler pages deploy public --project-name=blog-hexo-cf", {
     stdio: "inherit",
   });
 
   console.log("\n✅ 部署成功!");
-  console.log("🌐 访问你的站点: https://blog-hexo-kv.pages.dev\n");
+  console.log("🌐 访问你的站点: https://blog-hexo-cf.pages.dev\n");
 } catch (error) {
   console.error("\n❌ 部署失败:", error.message);
   process.exit(1);
