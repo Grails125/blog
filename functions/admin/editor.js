@@ -1,14 +1,12 @@
-/**
- * 文章编辑器页面
- * GET /admin/editor - 新版文章编辑器
- */
+﻿/**
+ * 鏂囩珷缂栬緫鍣ㄩ〉闈? * GET /admin-new/editor - 鏂扮増鏂囩珷缂栬緫鍣? */
 
 const editorHTML = `<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>文章编辑器 - 博客后台</title>
+    <title>鏂囩珷缂栬緫鍣?- 鍗氬鍚庡彴</title>
     <!-- EasyMDE -->
     <link
       rel="stylesheet"
@@ -40,7 +38,7 @@ const editorHTML = `<!DOCTYPE html>
     >
       <div class="flex items-center gap-3">
         <button
-          onclick="window.location.href='/admin'"
+          onclick="window.location.href='/admin-new'"
           class="text-slate-500 hover:text-slate-700 transition"
         >
           <svg
@@ -60,21 +58,20 @@ const editorHTML = `<!DOCTYPE html>
         <h1
           class="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"
         >
-          📝 文章编辑器
-        </h1>
+          馃摑 鏂囩珷缂栬緫鍣?        </h1>
       </div>
       <div class="flex gap-3">
         <button
           onclick="savePost(false)"
           class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors flex items-center gap-2"
         >
-          <span>💾</span> 保存草稿
+          <span>馃捑</span> 淇濆瓨鑽夌
         </button>
         <button
           onclick="savePost(true)"
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-sm flex items-center gap-2"
         >
-          <span>🚀</span> 发布文章
+          <span>馃殌</span> 鍙戝竷鏂囩珷
         </button>
       </div>
     </header>
@@ -87,13 +84,13 @@ const editorHTML = `<!DOCTYPE html>
       <div class="col-span-12 md:col-span-6">
         <label
           class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
-          >文章标题</label
+          >鏂囩珷鏍囬</label
         >
         <input
           type="text"
           id="title"
           class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-          placeholder="输入文章标题..."
+          placeholder="杈撳叆鏂囩珷鏍囬..."
         />
         <input type="hidden" id="postId" />
       </div>
@@ -102,19 +99,19 @@ const editorHTML = `<!DOCTYPE html>
       <div class="col-span-12 md:col-span-3">
         <label
           class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
-          >分类</label
+          >鍒嗙被</label
         >
         <div class="flex gap-2">
           <select
             id="category"
             class="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           >
-            <option value="">选择分类...</option>
+            <option value="">閫夋嫨鍒嗙被...</option>
           </select>
           <button
             onclick="addNewCategory()"
             class="px-2 py-2 border border-slate-300 rounded-lg hover:bg-slate-100 text-slate-600"
-            title="新建分类"
+            title="鏂板缓鍒嗙被"
           >
             +
           </button>
@@ -125,13 +122,13 @@ const editorHTML = `<!DOCTYPE html>
       <div class="col-span-12 md:col-span-3">
         <label
           class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
-          >标签</label
+          >鏍囩</label
         >
         <input
           type="text"
           id="tags"
           class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          placeholder="技术, 笔记 (逗号分隔)"
+          placeholder="鎶€鏈? 绗旇 (閫楀彿鍒嗛殧)"
         />
       </div>
 
@@ -139,19 +136,19 @@ const editorHTML = `<!DOCTYPE html>
       <div class="col-span-12">
         <label
           class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
-          >封面图片</label
+          >灏侀潰鍥剧墖</label
         >
         <div class="flex gap-3 items-center">
           <input
             type="text"
             id="cover"
             class="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="输入图片 URL 或上传..."
+            placeholder="杈撳叆鍥剧墖 URL 鎴栦笂浼?.."
           />
           <label
             class="cursor-pointer px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 transition-colors"
           >
-            📤 上传
+            馃摛 涓婁紶
             <input
               type="file"
               class="hidden"
@@ -174,10 +171,8 @@ const editorHTML = `<!DOCTYPE html>
 
       const getToken = () => localStorage.getItem("admin_token");
 
-      // 初始化
-      document.addEventListener("DOMContentLoaded", async () => {
-        // 检查登录状态
-        if (!getToken()) {
+      // 鍒濆鍖?      document.addEventListener("DOMContentLoaded", async () => {
+        // 妫€鏌ョ櫥褰曠姸鎬?        if (!getToken()) {
           window.location.href = "/admin";
           return;
         }
@@ -198,7 +193,7 @@ const editorHTML = `<!DOCTYPE html>
           element: document.getElementById("markdown-editor"),
           autofocus: true,
           spellChecker: false,
-          placeholder: "开始撰写精彩内容...",
+          placeholder: "寮€濮嬫挵鍐欑簿褰╁唴瀹?..",
           toolbar: [
             "bold",
             "italic",
@@ -249,7 +244,7 @@ const editorHTML = `<!DOCTYPE html>
             existingCategories = data.categories;
             const select = document.getElementById("category");
             select.innerHTML =
-              '<option value="">选择分类...</option>' +
+              '<option value="">閫夋嫨鍒嗙被...</option>' +
               existingCategories
                 .map((c) => \`<option value="\${c}">\${c}</option>\`)
                 .join("");
@@ -271,11 +266,9 @@ const editorHTML = `<!DOCTYPE html>
                         document.getElementById("cover").value = post.cover || "";
             easyMDE.value(post.content);
             
-            // 先加载分类列表
-            await loadMetaData();
+            // 鍏堝姞杞藉垎绫诲垪琛?            await loadMetaData();
             
-            // 然后设置分类值
-            if (post.category) {
+            // 鐒跺悗璁剧疆鍒嗙被鍊?            if (post.category) {
               const categorySelect = document.getElementById("category");
               const optionExists = Array.from(categorySelect.options).some(
                 option => option.value === post.category
@@ -294,12 +287,12 @@ const editorHTML = `<!DOCTYPE html>
 
           }
         } catch (e) {
-          alert("加载文章失败: " + e.message);
+          alert("鍔犺浇鏂囩珷澶辫触: " + e.message);
         }
       }
 
       function addNewCategory() {
-        const newCat = prompt("请输入新分类名称:");
+        const newCat = prompt("璇疯緭鍏ユ柊鍒嗙被鍚嶇О:");
         if (newCat) {
           const select = document.getElementById("category");
           const opt = document.createElement("option");
@@ -326,17 +319,17 @@ const editorHTML = `<!DOCTYPE html>
             if (data.success) {
               document.getElementById("cover").value = data.url;
             } else {
-              alert("上传失败: " + data.error);
+              alert("涓婁紶澶辫触: " + data.error);
             }
           } catch (e) {
-            alert("上传出错: " + e.message);
+            alert("涓婁紶鍑洪敊: " + e.message);
           }
         }
       }
 
       async function savePost(publish = false) {
         const title = document.getElementById("title").value;
-        if (!title) return alert("请输入标题");
+        if (!title) return alert("璇疯緭鍏ユ爣棰?);
 
         const postId = document.getElementById("postId").value;
         const postData = {
@@ -344,7 +337,7 @@ const editorHTML = `<!DOCTYPE html>
           content: easyMDE.value(),
           tags: document
             .getElementById("tags")
-            .value.split(/[,，]/)
+            .value.split(/[,锛宂/)
             .map((s) => s.trim())
             .filter(Boolean),
           category: document.getElementById("category").value,
@@ -355,7 +348,7 @@ const editorHTML = `<!DOCTYPE html>
         try {
           let res;
           if (postId) {
-            // 更新现有文章
+            // 鏇存柊鐜版湁鏂囩珷
             res = await fetch(\`/api/posts/\${postId}\`, {
               method: "PUT",
               headers: {
@@ -365,8 +358,7 @@ const editorHTML = `<!DOCTYPE html>
               body: JSON.stringify(postData),
             });
           } else {
-            // 创建新文章
-            res = await fetch("/api/posts/create", {
+            // 鍒涘缓鏂版枃绔?            res = await fetch("/api/posts/create", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -378,33 +370,16 @@ const editorHTML = `<!DOCTYPE html>
 
           const data = await res.json();
           if (data.success) {
-            const successMsg = publish ? "发布成功!" : "保存成功!";
-            alert(successMsg + "\n\n正在触发重新构建...");
-            // 自动触发重新构建
-            fetch("/api/rebuild", {
-              method: "POST",
-              headers: { Authorization: \`Bearer \${getToken()}\` },
-            })
-              .then(res => res.json())
-              .then(rebuildData => {
-                if (rebuildData.success) {
-                  console.log("重新构建成功");
-                } else {
-                  console.warn("触发构建失败");
-                }
-              })
-              .catch(() => {
-                console.error("触发构建请求失败");
-              });
+            alert(publish ? "鍙戝竷鎴愬姛!" : "淇濆瓨鎴愬姛!");
             if (!postId) {
               document.getElementById("postId").value = data.data.id;
               window.history.replaceState(null, null, "?id=" + data.data.id);
             }
           } else {
-            alert("保存失败: " + data.error);
+            alert("淇濆瓨澶辫触: " + data.error);
           }
         } catch (e) {
-          alert("系统错误: " + e.message);
+          alert("绯荤粺閿欒: " + e.message);
         }
       }
     </script>
