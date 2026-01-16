@@ -1,11 +1,12 @@
 /**
  * 从 R2 下载 Markdown 文件到 source/_posts
+ *
+ * 需要的环境变量:
+ * - CLOUDFLARE_ACCOUNT_ID: Cloudflare 账户 ID
+ * - R2_ACCESS_KEY_ID: R2 访问密钥 ID
+ * - R2_SECRET_ACCESS_KEY: R2 密钥
  */
-import {
-  S3Client,
-  ListObjectsV2Command,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

@@ -1,3 +1,6 @@
+// 加载环境变量
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -6,7 +9,7 @@ const { exec } = require("child_process");
 const multer = require("multer");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Logging Middleware
 app.use((req, res, next) => {
@@ -70,9 +73,7 @@ app.get("/api/posts", (req, res) => {
   fs.readdir(POSTS_DIR, (err, files) => {
     if (err) {
       console.error("[API] Error reading POSTS_DIR:", err);
-      return res
-        .status(500)
-        .json({ error: "Failed to read posts", details: err.message });
+      return res.status(500).json({ error: "Failed to read posts", details: err.message });
     }
 
     const posts = files
@@ -99,8 +100,7 @@ app.get("/api/posts", (req, res) => {
             if (titleMatch) title = titleMatch[1].trim();
             if (dateMatch) date = dateMatch[1].trim();
             if (tagsMatch) tags = tagsMatch[1].split(",").map((s) => s.trim());
-            if (categoryMatch)
-              category = categoryMatch[1].split(",").map((s) => s.trim());
+            if (categoryMatch) category = categoryMatch[1].split(",").map((s) => s.trim());
             if (coverMatch) cover = coverMatch[1].trim();
           }
         } catch (e) {
@@ -111,11 +111,7 @@ app.get("/api/posts", (req, res) => {
           filename,
           title,
           date,
-          categories: Array.isArray(category)
-            ? category
-            : category
-            ? [category]
-            : [], // Normalize to array
+          categories: Array.isArray(category) ? category : category ? [category] : [], // Normalize to array
           tags,
           cover,
         };
@@ -149,9 +145,7 @@ app.get("/api/posts/:filename", (req, res) => {
 
     const parts = data.split("---");
     if (parts.length < 3) {
-      console.log(
-        `[API] Malformed front-matter for ${filename}, returning default.`
-      );
+      console.log(`[API] Malformed front-matter for ${filename}, returning default.`);
       return res.json({
         success: true,
         data: {
@@ -182,9 +176,7 @@ app.get("/api/posts/:filename", (req, res) => {
         title: titleMatch ? titleMatch[1].trim() : "",
         date: dateMatch ? dateMatch[1].trim() : "",
         tags: tagsMatch ? tagsMatch[1].split(",").map((s) => s.trim()) : [],
-        category: categoryMatch
-          ? categoryMatch[1].split(",").map((s) => s.trim())[0]
-          : "",
+        category: categoryMatch ? categoryMatch[1].split(",").map((s) => s.trim())[0] : "",
         cover: coverMatch ? coverMatch[1].trim() : "",
         content: content,
       },
@@ -201,9 +193,7 @@ app.post("/api/posts", (req, res) => {
   const dateStr = formatBeijingDate();
   let safeFilename = filename;
   if (!safeFilename) {
-    safeFilename = title
-      .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "-")
-      .toLowerCase();
+    safeFilename = title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "-").toLowerCase();
     if (!safeFilename.endsWith(".md")) safeFilename += ".md";
   }
 
@@ -262,15 +252,10 @@ app.get("/api/meta", (req, res) => {
 
 app.post("/api/publish", (req, res) => {
   console.log("[API] Running hexo generate...");
-  exec(
-    "npx hexo generate",
-    { cwd: path.join(__dirname, "..") },
-    (err, stdout, stderr) => {
-      if (err)
-        return res.status(500).json({ error: "Build failed", details: stderr });
-      res.json({ success: true, output: stdout });
-    }
-  );
+  exec("npx hexo generate", { cwd: path.join(__dirname, "..") }, (err, stdout, stderr) => {
+    if (err) return res.status(500).json({ error: "Build failed", details: stderr });
+    res.json({ success: true, output: stdout });
+  });
 });
 
 app.get("/admin/login", (req, res) => {

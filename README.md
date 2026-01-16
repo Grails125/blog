@@ -4,6 +4,23 @@
 
 ## 本地开发
 
+### 环境配置
+
+首先复制环境变量示例文件并配置:
+
+```bash
+# 复制环境变量模板
+cp .env.example .env
+
+# 编辑 .env 文件,填入真实的配置
+# - R2 存储配置(用于从R2下载文章)
+# - 管理员密码哈希
+# - JWT密钥
+# - 其他配置
+```
+
+### 本地命令
+
 ```bash
 # 安装依赖
 npm install
@@ -11,11 +28,23 @@ npm install
 # 启动本地服务器
 npm run server
 
+# 启动开发服务器(预览草稿)
+npm run dev
+
+# 启动管理后台(开发模式,自动重启)
+npm run admin:dev
+
 # 生成静态文件
 npm run build
 
 # 清理缓存
 npm run clean
+
+# 代码检查
+npm run lint
+
+# 代码格式化
+npm run format
 ```
 
 ## Cloudflare 部署步骤

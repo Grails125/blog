@@ -11,12 +11,10 @@
 这是最快、最有效的解决方法：
 
 1. **删除旧项目**:
-
    - 登录 Cloudflare Dashboard
    - 进入你的 Pages 项目 -> **Settings** -> **Delete project**
 
 2. **重新创建项目**:
-
    - **Sources**: Connect to Git -> 选择 `Grails125/blog`
    - **Framework preset**: None (或 Hexo)
    - **Build command**: `npm run build`
@@ -41,9 +39,31 @@
 
 ### 环境变量
 
-| 变量名         | 值   |
-| -------------- | ---- |
-| `NODE_VERSION` | `18` |
+需要在 Cloudflare Pages 项目设置中添加以下环境变量:
+
+**必需环境变量:**
+
+| 变量名         | 值   | 说明         |
+| -------------- | ---- | ------------ |
+| `NODE_VERSION` | `18` | Node.js 版本 |
+
+**R2 存储配置 (用于构建时下载文章):**
+
+| 变量名                  | 说明               |
+| ----------------------- | ------------------ |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 账户 ID |
+| `R2_ACCESS_KEY_ID`      | R2 访问密钥 ID     |
+| `R2_SECRET_ACCESS_KEY`  | R2 密钥            |
+| `R2_BUCKET_NAME`        | R2 存储桶名称      |
+
+**管理员配置 (用于后台登录):**
+
+| 变量名                | 说明                      |
+| --------------------- | ------------------------- |
+| `ADMIN_PASSWORD_HASH` | 管理员密码的 SHA-256 哈希 |
+| `JWT_SECRET`          | JWT 密钥(可选)            |
+
+> **注意:** 本地开发时,这些环境变量应配置在 `.env` 文件中(参考 `.env.example`)
 
 ### KV 命名空间绑定
 
