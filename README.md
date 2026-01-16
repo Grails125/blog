@@ -47,7 +47,23 @@ npm run lint
 npm run format
 ```
 
-## Cloudflare 部署步骤
+## Cloudflare 部署
+
+### 一键部署
+
+```bash
+# 1. 首先登录 Cloudflare (首次使用)
+npx wrangler login
+
+# 2. 配置环境变量
+# 复制 .env.example 为 .env 并填入真实值
+cp .env.example .env
+
+# 3. 一键构建并部署
+npm run deploy:cf
+```
+
+### 手动部署步骤
 
 ### 1. 创建 KV 命名空间
 
