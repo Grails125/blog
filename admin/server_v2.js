@@ -274,7 +274,7 @@ app.post("/api/publish", (req, res) => {
   );
 });
 
-app.get("/admin", (req, res) => {
+app.get("/admin-new/login", (req, res) => {
   const indexHtml = path.join(__dirname, "static/index.html");
   console.log("[API] Serving index.html from:", indexHtml);
   res.sendFile(indexHtml);

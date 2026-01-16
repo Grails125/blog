@@ -325,7 +325,7 @@ const adminHTML = `<!DOCTYPE html>
 
           const logout = () => {
             localStorage.removeItem("admin_token");
-            window.location.href = "/admin";
+            window.location.href = "/admin-new/login";
           };
 
           const formatDate = (dateStr) => {
@@ -337,7 +337,7 @@ const adminHTML = `<!DOCTYPE html>
           onMounted(() => {
             // 检查登录状态
             if (!getToken()) {
-              window.location.href = "/admin";
+              window.location.href = "/admin-new/login";
               return;
             }
             fetchPosts();
